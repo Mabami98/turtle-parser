@@ -7,10 +7,9 @@
 #include <iostream>
 using namespace std;
 
-// static variable to track if any error occurred
 bool turtle::had_error = false;
 
-// main entry: tokenize, parse, execute
+// tokenize, parse, execute
 void turtle::run(const string& source) {
     lexer scanner(source);
     vector<token> tokens = scanner.scan_tokens();
@@ -27,8 +26,6 @@ void turtle::run(const string& source) {
         // syntax error already reported
         return;
     }
-
-    // optional: stop if there were syntax errors
     if (had_error) return;
 
     // run the program (prints actions for now)
