@@ -1,6 +1,3 @@
-// lexer.hpp
-// turns turtle code into tokens like FORW, BACK, COLOR, etc.
-
 #ifndef LEXER_HPP
 #define LEXER_HPP
 
