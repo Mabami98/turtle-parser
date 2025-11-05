@@ -123,7 +123,7 @@ token parser::advance() {
     return previous();
 }
 
-// check if we've consumed all tokens
+// check if we have consumed all tokens
 bool parser::is_at_end() {
     return peek().type == "EOF";
 }
