@@ -1,6 +1,3 @@
-// parser.cpp
-// builds a tree of turtle instructions using recursive descent
-
 #include "Parser.hpp"
 #include "ParseTree.hpp"
 #include "Turtle.hpp"
@@ -20,7 +17,7 @@ shared_ptr<node> parser::parse_program() {
     auto sequence = make_shared<sequence_node>();
 
     while (!is_at_end()) {
-        // stop if we see closing quote (for REP bodies)
+        // stop if we see closing quote (for REP statements)
         if (check("QUOTE")) break;
 
         auto cmd = parse_command();
@@ -30,7 +27,7 @@ shared_ptr<node> parser::parse_program() {
     return sequence;
 }
 
-// parses a single command: FORW 100. or REP 4 " ... "
+// parses a single command: FORW 100. or REP 4 
 shared_ptr<node> parser::parse_command() {
     if (match("FORW")) {
         auto amount = advance();
