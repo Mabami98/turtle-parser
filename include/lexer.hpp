@@ -1,5 +1,5 @@
 // lexer.hpp
-// the lexer reads characters and turns them into tokens
+// turns turtle code into tokens like FORW, BACK, COLOR, etc.
 
 #ifndef LEXER_HPP
 #define LEXER_HPP
@@ -8,65 +8,40 @@
 #include <vector>
 using namespace std;
 
-class token; // forward declaration
-enum class token_type; // forward declaration
+class token;
 
 class lexer {
 public:
     lexer(const string& source_code);
 
-    // turn the input source into a list of tokens
+    // returns a list of tokens for the given turtle source code
     vector<token> scan_tokens();
 
 private:
-    string source;        // the input text
-    vector<token> tokens; // list of tokens found
+    string source;        // original input
+    vector<token> tokens; // tokens that get built
 
-    int start = 0;   // start of current lexeme
-    int current = 0; // current character index
-    int line = 1;    // line number in the file
+    int start = 0;        // where current token begins
+    int current = 0;      // current character being checked
+    int line = 1;         // line number (for errors)
 
-    // scan one token and add it to the list
-    void scan_token();
+    void scan_token();    // scans a single token
 
-    // check if we've reached the end of input
-    bool is_at_end();
+    bool is_at_end();     // have we reached the end?
 
-    // read the next character and move forward
-    char advance();
+    char advance();       // get current char and move ahead
 
-    // add a token of a given type with no literal
-    void add_token(token_type type);
+    void add_token(const string& type);                  // simple token (like UP or DOT)
+    void add_token(const string& type, const string& value); // token with literal (like number or color)
 
-    // add a token with literal string value
-    void add_token(token_type type, const string& literal);
+    char peek();          // look at current char without moving
+    char peek_next();     // look ahead one more
 
-    // helper to match a specific next character
-    bool match(char expected);
+    void skip_comment();  // handles % comments
 
-    // look ahead without consuming the character
-    char peek();
-
-    // look ahead two characters
-    char peek_next();
-
-    // string literal parser
-    void string_literal();
-
-    // number parser
-    void number();
-
-    // identifier or keyword
-    void identifier();
-
-    // check if a char is a digit
-    bool is_digit(char c);
-
-    // check if a char is a letter or underscore
-    bool is_alpha(char c);
-
-    // check if a char is alphanumeric
-    bool is_alphanumeric(char c);
+    void match_keyword_or_error(); // checks for commands like FORW, BACK, etc.
+    void number();                 // parses a decimal number
+    void hex_color();             // parses #HEX values
 };
 
 #endif
