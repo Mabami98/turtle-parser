@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
         input = buffer.str();
     } else {
         // read from standard input if no file was given
-        cout << "mata in turtle-kod (CTRL+D för att avsluta):" << endl;
+        cout << "Write a valid command:" << endl;
         stringstream buffer;
         buffer << cin.rdbuf();
         input = buffer.str();
