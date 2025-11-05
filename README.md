@@ -2,7 +2,7 @@
 
 A C++ implementation of a simple turtle graphics language interpreter (inspired by Logo), built using a recursive descent parser — **currently in progress**.
 
-🛠️ **Note:** This project is not fully functional yet, the interpreter **parses and prints** commands, but **does not yet generate output or graphical drawing**. 
+**Note:** This project is not fully functional yet, the interpreter **parses and prints** commands, but **does not yet generate output or graphical drawing**. 
 
 ---
 
