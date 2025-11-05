@@ -1,7 +1,3 @@
-// turtle.hpp
-// this file contains the declaration of the turtle class
-// it used to be called leona in java
-
 #ifndef TURTLE_HPP
 #define TURTLE_HPP
 
