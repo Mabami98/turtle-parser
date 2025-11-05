@@ -20,7 +20,7 @@ private:
     const vector<token>& tokens;
     int current = 0;
 
-    // top-level entry: list of commands
+    // top level entry: list of commands
     shared_ptr<node> parse_program();
 
     // parse a single command (FORW, BACK, etc.)
