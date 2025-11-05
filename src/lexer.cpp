@@ -1,5 +1,4 @@
-// lexer.cpp
-// turns the turtle (leona) code into a list of tokens
+// turns the turtle code into a list of tokens
 
 #include "Lexer.hpp"
 #include "Token.hpp"
