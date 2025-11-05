@@ -1,6 +1,3 @@
-// main.cpp
-// entry point for turtle interpreter
-
 #include "Turtle.hpp"
 #include <iostream>
 #include <fstream>
