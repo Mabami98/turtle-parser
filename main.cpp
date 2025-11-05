@@ -1,40 +1,36 @@
-#include "lexer.hpp"
-#include "parser.hpp"
-#include "syntax_error.hpp"
+// main.cpp
+// entry point for turtle interpreter
+
+#include "Turtle.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        cerr << "usage: " << argv[0] << " <source_file.turtle>" << endl;
-        return 1;
+    string input;
+
+    if (argc > 1) {
+        // if a file name is given, read from file
+        ifstream file(argv[1]);
+        if (!file) {
+            cerr << "kunde inte öppna filen: " << argv[1] << endl;
+            return 1;
+        }
+
+        stringstream buffer;
+        buffer << file.rdbuf();
+        input = buffer.str();
+    } else {
+        // read from standard input if no file was given
+        cout << "mata in turtle-kod (CTRL+D för att avsluta):" << endl;
+        stringstream buffer;
+        buffer << cin.rdbuf();
+        input = buffer.str();
     }
 
-    ifstream file(argv[1]);
-    if (!file.is_open()) {
-        cerr << "could not open file: " << argv[1] << endl;
-        return 1;
-    }
+    turtle t;
+    t.run(input);
 
-    stringstream buffer;
-    buffer << file.rdbuf();
-    string source_code = buffer.str();
-
-    try {
-        Lexer lexer(source_code);
-        Parser parser(lexer);
-        ParseTree program = parser.parse();
-        program.execute();
-    } catch (const SyntaxError& e) {
-        cerr << "syntax error: " << e.what() << endl;
-        return 1;
-    } catch (const exception& e) {
-        cerr << "error: " << e.what() << endl;
-        return 1;
-    }
-
-    return 0;
+    return turtle::had_error ? 1 : 0;
 }
