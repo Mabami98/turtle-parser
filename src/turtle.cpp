@@ -1,12 +1,8 @@
-// turtle.cpp
-// this file has the implementation of the turtle class
-// turtle is the main class that runs the turtle language
-
 #include "Turtle.hpp"
 #include "Lexer.hpp"
 #include "Token.hpp"
-// #include "Parser.hpp" // <- you'll include this once parsing is ready
-// #include "ParseTree.hpp" // <- and this when building/using the syntax tree
+#include "Parser.hpp"
+#include "ParseTree.hpp"
 
 #include <iostream>
 using namespace std;
@@ -14,26 +10,29 @@ using namespace std;
 // static variable to track if any error occurred
 bool turtle::had_error = false;
 
-// run is the main entry point — it will eventually do everything
+// main entry: tokenize, parse, execute
 void turtle::run(const string& source) {
-    scan_and_print_tokens(source); // for now, just lex and show tokens
-
-    // TODO: phase 2 – parse tokens into syntax tree
-    // parser p(tokens);
-    // auto tree = p.parse();
-
-    // TODO: phase 3 – interpret and execute the program
-    // tree->execute();
-}
-
-// turn source into tokens and print them
-void turtle::scan_and_print_tokens(const string& source) {
     lexer scanner(source);
     vector<token> tokens = scanner.scan_tokens();
 
-    for (const token& t : tokens) {
-        cout << t.to_string() << endl;
+    // stop early if lexer found an error
+    if (had_error) return;
+
+    parser p(tokens);
+    shared_ptr<node> tree;
+
+    try {
+        tree = p.parse();
+    } catch (const runtime_error&) {
+        // syntax error already reported
+        return;
     }
+
+    // optional: stop if there were syntax errors
+    if (had_error) return;
+
+    // run the program (prints actions for now)
+    tree->run();
 }
 
 // called when something goes wrong during lexing/parsing
