@@ -1,64 +1,57 @@
 #include "lexer.hpp"
 #include <cctype>
-#include <sstream>
+#include <stdexcept>
 
-using namespace std;
+TurtleLexer::TurtleLexer(const std::string& input)
+    : input(input), pos(0) {}
 
-Lexer::Lexer(const string& input) : src(input), pos(0) {}
+Token TurtleLexer::next_token() {
+    skip_whitespace();
 
-vector<Token> Lexer::tokenize() {
-    vector<Token> tokens;
-
-    while (pos < src.length()) {
-        char current = src[pos];
-
-        if (isspace(current)) {
-            pos++; // skip whitespace
-            continue;
-        }
-
-        if (isalpha(current)) {
-            string ident = read_identifier();
-            tokens.push_back(Token("IDENT", ident));
-            continue;
-        }
-
-        if (isdigit(current)) {
-            string number = read_number();
-            tokens.push_back(Token("NUMBER", number));
-            continue;
-        }
-
-        switch (current) {
-            case '+': tokens.push_back(Token("PLUS", "+")); break;
-            case '-': tokens.push_back(Token("MINUS", "-")); break;
-            case '*': tokens.push_back(Token("MUL", "*")); break;
-            case '/': tokens.push_back(Token("DIV", "/")); break;
-            case '(': tokens.push_back(Token("LPAREN", "(")); break;
-            case ')': tokens.push_back(Token("RPAREN", ")")); break;
-            case ';': tokens.push_back(Token("SEMICOLON", ";")); break;
-            default:
-                throw SyntaxError("Unknown character: " + string(1, current));
-        }
-        pos++;
+    if (pos >= input.length()) {
+        return Token(TokenType::END_OF_FILE, "");
     }
 
-    tokens.push_back(Token("EOF", "")); // end of input marker
-    return tokens;
+    char ch = input[pos];
+
+    // Check for a number (could be a float)
+    if (std::isdigit(ch)) {
+        std::string number;
+        while (pos < input.length() && (std::isdigit(input[pos]) || input[pos] == '.')) {
+            number += input[pos++];
+        }
+        return Token(TokenType::NUMBER, number);
+    }
+
+    // Check for identifiers or keywords
+    if (std::isalpha(ch)) {
+        std::string word;
+        while (pos < input.length() && std::isalpha(input[pos])) {
+            word += input[pos++];
+        }
+
+        if (word == "forward") return Token(TokenType::FORWARD, word);
+        if (word == "right") return Token(TokenType::RIGHT, word);
+        if (word == "left") return Token(TokenType::LEFT, word);
+        if (word == "repeat") return Token(TokenType::REPEAT, word);
+
+        throw std::runtime_error("Unknown keyword: " + word);
+    }
+
+    // Check for special symbols
+    if (ch == '[') {
+        pos++;
+        return Token(TokenType::LBRACKET, "[");
+    } else if (ch == ']') {
+        pos++;
+        return Token(TokenType::RBRACKET, "]");
+    }
+
+    throw std::runtime_error(std::string("Unexpected character: ") + ch);
 }
 
-string Lexer::read_identifier() {
-    int start = pos;
-    while (pos < src.length() && isalnum(src[pos])) {
+void TurtleLexer::skip_whitespace() {
+    while (pos < input.length() && std::isspace(input[pos])) {
         pos++;
     }
-    return src.substr(start, pos - start);
-}
-
-string Lexer::read_number() {
-    int start = pos;
-    while (pos < src.length() && isdigit(src[pos])) {
-        pos++;
-    }
-    return src.substr(start, pos - start);
 }
