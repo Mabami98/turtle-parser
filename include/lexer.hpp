@@ -1,31 +1,41 @@
+// lexer.hpp
 #pragma once
 
 #include <string>
 #include <vector>
 
 enum class TokenType {
-    FORWARD, TURN, LEFT, RIGHT, REPEAT,
-    NUMBER, LBRACKET, RBRACKET,
-    END
+    IDENTIFIER,
+    NUMBER,
+    COMMAND,
+    LBRACKET,
+    RBRACKET,
+    EOF_TOKEN,
+    INVALID
 };
 
 struct Token {
     TokenType type;
-    std::string text;
-    int value = 0; // used only for NUMBER tokens
+    std::string value;
+    int position;
 };
 
 class Lexer {
 public:
     Lexer(const std::string& input);
+
     std::vector<Token> tokenize();
 
 private:
     std::string input;
-    size_t pos;
+    int pos;
+    int length;
+
+    char peek() const;
+    char get();
+    bool is_at_end() const;
 
     void skip_whitespace();
-    char peek() const;
-    char advance();
-    bool match(const std::string& word);
+    Token identifier();
+    Token number();
 };
