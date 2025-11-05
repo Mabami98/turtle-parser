@@ -61,7 +61,7 @@ void lexer::scan_token() {
     }
 }
 
-// check if we're at the end of input
+// check if we ar at the end of input
 bool lexer::is_at_end() {
     return current >= source.length();
 }
@@ -119,7 +119,7 @@ void lexer::number() {
     add_token("DECIMAL", value);
 }
 
-// handles colors like #FFA500
+// handles hex colors like #FFA500
 void lexer::hex_color() {
     while (isxdigit(peek())) advance();
 
